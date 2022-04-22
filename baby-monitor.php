@@ -1,51 +1,38 @@
 <?php
 
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-esp8266-mysql-database-php/
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*/
-
-$servername = "localhost";
+$servername = "ec2-44-199-143-43.compute-1.amazonaws.com";
 
 // REPLACE with your Database name
-$dbname = "REPLACE_WITH_YOUR_DATABASE_NAME";
+$dbname = "d1b25dtb48u8jr";
 // REPLACE with Database user
-$username = "REPLACE_WITH_YOUR_USERNAME";
+$username = "gwvynzijwcgjel";
 // REPLACE with Database user password
-$password = "REPLACE_WITH_YOUR_PASSWORD";
+$password = "e15b68b54b4f9ecd2c8eed18a17d455cc54562336bd448304fd8e0870c28ac70";
 
 // Keep this API Key value to be compatible with the ESP32 code provided in the project page. 
 // If you change this value, the ESP32 sketch needs to match
-$api_key_value = "tPmAT5Ab3j7F9";
+$api_key_value = "miegodogaja";
 
-$api_key= $sensor = $location = $value1 = $value2 = $value3 = "";
+$api_key=$value1 = $value2 = $value3 = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $api_key = test_input($_POST["api_key"]);
     if($api_key == $api_key_value) {
-        $sensor = test_input($_POST["sensor"]);
-        $location = test_input($_POST["location"]);
         $value1 = test_input($_POST["value1"]);
         $value2 = test_input($_POST["value2"]);
         $value3 = test_input($_POST["value3"]);
         
         // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
+        $conn = pg_connect($servername, $username, $password, $dbname);
         // Check connection
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         } 
         
-        $sql = "INSERT INTO SensorData (sensor, location, value1, value2, value3)
-        VALUES ('" . $sensor . "', '" . $location . "', '" . $value1 . "', '" . $value2 . "', '" . $value3 . "')";
+        $sql = "INSERT INTO bayi (suhu, suara, detak_jantung)
+        VALUES ('" . $value1 . "', '" . $value2 . "', '" . $value3 . "')";
         
-        if ($conn->query($sql) === TRUE) {
+        if ($conn->pg_query($conn,$sql) === TRUE) {
             echo "New record created successfully";
         } 
         else {
@@ -69,3 +56,4 @@ function test_input($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
+?>
